@@ -21,14 +21,22 @@ public class ArticleDAO extends BaseDAO {
 			return false;
 		}
 	}
-	/*
-	 * public boolean updateArticle(Article Article) {// 修改文章信息 String sql =
-	 * "update Article set c_address ='"+Article.getAddress()+"',c_name='"+
-	 * Article.getName()+"'where c_id='" + Article.getId() + "'"; try (
-	 * Connection conn = dataSource.getConnection(); PreparedStatement pstmt =
-	 * conn.prepareStatement(sql)) { pstmt.executeUpdate(); return true; } catch
-	 * (SQLException se) { se.printStackTrace(); return false; } }
-	 */
+
+	public boolean updateArticle(Article article) {// 修改文章
+		String sql = "update Article set title ='" + article.getTitle() 
+		+ "',type='" + article.getType()
+		+ "',tags='" + article.getTags()
+		+ "',content='" + article.getContent()
+		+ "',update_time='" + article.getUpdate_time()
+		+ "'where id='" + article.getId() + "'";
+		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.executeUpdate();
+			return true;
+		} catch (SQLException se) {
+			se.printStackTrace();
+			return false;
+		}
+	}
 
 	public boolean deleteArticle(String aid) {// 删除文章
 		String sql = "delete from Article where id=?";
@@ -41,17 +49,52 @@ public class ArticleDAO extends BaseDAO {
 			return false;
 		}
 	}
-	/*
-	 * public Article findByName(String name) { // 按名字查询文章 String sql =
-	 * "select * from Article where c_name=?"; Article Article = new Article();
-	 * try (Connection conn = dataSource.getConnection(); PreparedStatement
-	 * pstmt = conn.prepareStatement(sql)) { pstmt.setString(1, name); try
-	 * (ResultSet rst = pstmt.executeQuery()) { if (rst.next()) {
-	 * Article.setId(rst.getInt("c_id"));
-	 * Article.setName(rst.getString("c_name"));
-	 * Article.setAddress(rst.getString("c_address")); }else return null; } }
-	 * catch (SQLException se) { return null; } return Article; }
-	 */
+
+	public Article findByTitle(String title) { // 按标题查询文章
+		String sql = "select * from Article where title=?";
+		Article article = new Article();
+		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, title);
+			try (ResultSet rst = pstmt.executeQuery()) {
+				if (rst.next()) {
+					article.setId(rst.getInt("id"));
+					article.setTitle(rst.getString("title"));
+					article.setType(rst.getString("type"));
+					article.setTags(rst.getString("tags"));
+					article.setContent(rst.getString("content"));
+					article.setCreate_time(rst.getString("create_time"));
+					article.setUpdate_time(rst.getString("update_time"));
+				} else
+					return null;
+			}
+		} catch (SQLException se) {
+			return null;
+		}
+		return article;
+	}
+	
+	public Article findById(String id) { // 按ID查询文章
+		String sql = "select * from Article where id=?";
+		Article article = new Article();
+		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, id);
+			try (ResultSet rst = pstmt.executeQuery()) {
+				if (rst.next()) {
+					article.setId(rst.getInt("id"));
+					article.setTitle(rst.getString("title"));
+					article.setType(rst.getString("type"));
+					article.setTags(rst.getString("tags"));
+					article.setContent(rst.getString("content"));
+					article.setCreate_time(rst.getString("create_time"));
+					article.setUpdate_time(rst.getString("update_time"));
+				} else
+					return null;
+			}
+		} catch (SQLException se) {
+			return null;
+		}
+		return article;
+	}
 
 	public ArrayList<Article> findAllArticle() {// 查询所有文章
 		ArrayList<Article> articleList = new ArrayList<Article>();
